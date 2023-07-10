@@ -41,13 +41,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Cacheable("orders")
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
 
     @Override
-    @Cacheable("orderByBrandName")
     public List<Order> getOrderByBrandName(String brandName) {
         return orderRepository.findAllByBrandName(brandName);
     }
