@@ -1,0 +1,63 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.6.7'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+
+	// Spring WEB
+	implementation("org.springframework.boot:spring-boot-starter-web")
+
+	// Spring Data JPA
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("com.vladmihalcea:hibernate-types-52:2.1.1")
+
+	// Lombok
+	compileOnly("org.projectlombok:lombok:1.18.24")
+	annotationProcessor("org.projectlombok:lombok:1.18.24")
+
+	// Mapstruct
+	implementation("org.mapstruct:mapstruct:1.4.2.Final")
+	annotationProcessor("org.mapstruct:mapstruct-processor:1.4.2.Final")
+
+	//Hibernate Validation
+	implementation("org.hibernate.validator:hibernate-validator:6.2.3.Final")
+
+	//PostgreSql
+	implementation("org.postgresql:postgresql:42.5.3")
+
+	// Redis
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'org.postgresql:postgresql'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// Test
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.jeasy:easy-random-core:5.0.0")
+	testImplementation("uk.co.jemos.podam:podam:7.2.9.RELEASE")
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
