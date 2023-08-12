@@ -1,8 +1,8 @@
 package com.example.redisexample.controller;
 
 import com.example.redisexample.dao.entity.Order;
-import com.example.redisexample.dao.model.order.OrderDto;
-import com.example.redisexample.dao.model.order.request.CreateOrderRequest;
+import com.example.redisexample.model.order.OrderDto;
+import com.example.redisexample.model.order.request.CreateOrderRequest;
 import com.example.redisexample.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +24,18 @@ public class OrderController {
         return ResponseEntity.ok(service.createOrder(request));
     }
 
-    @GetMapping()
-    private ResponseEntity<List<Order>> getById() {
-        return ResponseEntity.ok(service.getAllOrders());
+    @GetMapping("/all/v1")
+    private ResponseEntity<List<Order>> getAllV1() {
+        return ResponseEntity.ok(service.getAllOrdersV1());
+    }
+
+    @GetMapping("/all/v2")
+    private ResponseEntity<List<OrderDto>> getAllV2() {
+        return ResponseEntity.ok(service.getAllOrdersV2());
     }
 
     @GetMapping("/{id}")
-    private ResponseEntity<Order> getById(
+    private ResponseEntity<OrderDto> getById(
             @PathVariable Long id
     ) {
         return ResponseEntity.ok(service.getOrderById(id));
@@ -49,6 +54,11 @@ public class OrderController {
             @PathVariable(name = "name") String name
     ) {
         return ResponseEntity.ok(service.getOrderByBrandNameAndName(brand, name));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    private void deleteOrder(@PathVariable Long id) {
+        service.deleteOrder(id);
     }
 
 }

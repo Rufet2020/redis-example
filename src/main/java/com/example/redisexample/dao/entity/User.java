@@ -7,7 +7,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -16,8 +15,8 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "orders")
-public class Order implements Serializable {
+@Table(name = "users")
+public class User implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 3;
@@ -26,10 +25,11 @@ public class Order implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-    private String name;
-    private Long quantity;
-    private String brandName;
-    private BigDecimal price;
+    private String firstName;
+    private String lastName;
+    private String middleName;
+    private LocalDateTime birthDate;
+    private Integer age;
     private String description;
     private boolean isDeleted;
 

@@ -1,14 +1,14 @@
-package com.example.redisexample.dao.model.order;
+package com.example.redisexample.model.order;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
-public class OrderDto {
+public class OrderDto implements Serializable {
     private Long id;
-    private String name;
+    private String firstName;
     private Long quantity;
     private String brandName;
     private BigDecimal price;

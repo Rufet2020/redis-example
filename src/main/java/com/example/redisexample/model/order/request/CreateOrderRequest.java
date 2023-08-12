@@ -1,4 +1,4 @@
-package com.example.redisexample.dao.model.order.request;
+package com.example.redisexample.model.order.request;
 
 import lombok.Data;
 
