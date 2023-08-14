@@ -34,11 +34,18 @@ public class OrderController {
         return ResponseEntity.ok(service.getAllOrdersV2());
     }
 
-    @GetMapping("/{id}")
-    private ResponseEntity<OrderDto> getById(
+    @GetMapping("/v1/{id}")
+    private ResponseEntity<OrderDto> getByIdV1(
             @PathVariable Long id
     ) {
-        return ResponseEntity.ok(service.getOrderById(id));
+        return ResponseEntity.ok(service.getOrderByIdV1(id));
+    }
+
+    @GetMapping("/v2/{id}")
+    private ResponseEntity<OrderDto> getByIdV2(
+            @PathVariable Long id
+    ) {
+        return ResponseEntity.ok(service.getOrderByIdV2(id));
     }
 
     @GetMapping("/brand/{brand}")
@@ -54,6 +61,16 @@ public class OrderController {
             @PathVariable(name = "name") String name
     ) {
         return ResponseEntity.ok(service.getOrderByBrandNameAndName(brand, name));
+    }
+
+    @GetMapping("/v1/search/{query}")
+    private ResponseEntity<List<OrderDto>> searchOrderV1(@PathVariable String query) {
+        return ResponseEntity.ok(service.searchOrderV1(query));
+    }
+
+    @GetMapping("/v2/search/{query}")
+    private ResponseEntity<List<OrderDto>> searchOrderV2(@PathVariable String query) {
+        return ResponseEntity.ok(service.searchOrderV2(query));
     }
 
     @DeleteMapping("/delete/{id}")

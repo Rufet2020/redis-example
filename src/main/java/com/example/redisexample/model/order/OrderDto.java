@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @Data
 public class OrderDto implements Serializable {
     private Long id;
-    private String firstName;
+    private String name;
     private Long quantity;
     private String brandName;
     private BigDecimal price;

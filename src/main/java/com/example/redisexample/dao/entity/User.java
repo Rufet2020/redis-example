@@ -16,6 +16,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
+
+//TODO: Show this   Bu annotasiyanın məqsədi manual configurasiyada biz redisTemplate götürdüyü
+// obyekt üçün hasValueSerializer artırmasaq Entity özündə qeyd etməliyik, Implements serializable da buna nümunədir.
+//@RedisHash("User")
 public class User implements Serializable {
 
     @Serial

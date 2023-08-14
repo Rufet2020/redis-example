@@ -41,6 +41,7 @@ public class CacheConfig {
         var genericRedisSerializer = new GenericJackson2JsonRedisSerializer();
         template.setKeySerializer(genericRedisSerializer);
         template.setValueSerializer(genericRedisSerializer);
+        //Todo: Serializator numnesi kimi goster
 //        template.setKeySerializer(new StringRedisSerializer());
 //        template.setValueSerializer(new LocalDateTimeSerializer());
         template.setHashValueSerializer(genericRedisSerializer);

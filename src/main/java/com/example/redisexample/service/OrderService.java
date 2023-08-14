@@ -10,13 +10,21 @@ public interface OrderService {
 
     OrderDto createOrder(CreateOrderRequest request);
 
-    OrderDto getOrderById(Long orderId);
+    OrderDto getOrderByIdV1(Long orderId);
+
+    OrderDto getOrderByIdV2(Long orderId);
+
 
     List<Order> getAllOrdersV1();
 
     List<OrderDto> getAllOrdersV2();
 
     void deleteOrder(Long orderId);
+
+    List<OrderDto> searchOrderV1(String searchText);
+
+    List<OrderDto> searchOrderV2(String searchText);
+
 
     List<Order> getOrderByBrandName(String brandName);
 
