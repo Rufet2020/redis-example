@@ -6,6 +6,7 @@ import com.example.redisexample.exception.OrderNotFoundException;
 import com.example.redisexample.mapper.OrderMapper;
 import com.example.redisexample.model.order.OrderDto;
 import com.example.redisexample.model.order.request.CreateOrderRequest;
+import com.example.redisexample.service.OrderCacheService;
 import com.example.redisexample.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,12 +15,10 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +34,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
+    private final OrderCacheService orderCacheService;
 
     // Bu layerde caching muxtelif tip obyektler uzerinde olacaqsa bu versiya daha optimaldir.
     private final RedisTemplate<String, Object> redisTemplate;
@@ -45,9 +45,18 @@ public class OrderServiceImpl implements OrderService {
     // CacheEvict ile bu cache ile əlaqəli cachelər silinəcək
     @Override
     @CachePut(value = "orders", key = "#result.id", unless = "#result.brandName == null")
-    public OrderDto createOrder(CreateOrderRequest request) {
+    public OrderDto createOrderV1(CreateOrderRequest request) {
         OrderDto orderDto = orderMapper.toOrderDto(orderRepository.save(orderMapper.toOrderEntity(request)));
         log.info("created orderDto with id of: {}", orderDto.getId());
+        return orderDto;
+    }
+
+    @Override
+    public OrderDto createOrderV2(CreateOrderRequest request) {
+        OrderDto orderDto = orderMapper.toOrderDto(orderRepository.save(orderMapper.toOrderEntity(request)));
+        log.info("created orderDto with id of: {}", orderDto.getId());
+        orderCacheService.cacheOrder(orderDto);
+        orderCacheService.cacheOrders(List.of(orderDto));
         return orderDto;
     }
 
@@ -65,75 +74,37 @@ public class OrderServiceImpl implements OrderService {
     // Caching for simple method V2
     @Override
     public OrderDto getOrderByIdV2(Long orderId) {
-        String cacheKey = "order::" + orderId;
-        ValueOperations<String, Object> valueOps = redisTemplate.opsForValue();
-
-        OrderDto order = (OrderDto) valueOps.get(cacheKey);
-        if (order == null) {
+        OrderDto orderDto = orderCacheService.getOrderById(orderId);
+        if (orderDto == null) {
             Optional<Order> orderOptional = orderRepository.findOrderById(orderId);
-            order = orderOptional.map(orderMapper::toOrderDto)
-                    .orElseThrow(OrderNotFoundException::new);
-            valueOps.set(cacheKey, order);
+            orderDto = orderOptional.map(orderMapper::toOrderDto).orElseThrow(OrderNotFoundException::new);
+            orderCacheService.cacheOrder(orderDto);
         }
-
-        return order;
+        return orderDto;
     }
 
     // Caching for expensive || frequently accessed data V1
     @Override
     @Cacheable(value = "orders", keyGenerator = "customCacheKeyGenerator")
-    public List<Order> getAllOrdersV1() {
-        List<Order> orders = orderRepository.findAll();
-        System.out.println(orders.size());
-        return orders.stream()
-                .filter(order -> order.getBrandName().length() < 10)
-                .peek(order -> {
-                    var quantity = order.getQuantity() == null ? 1L : order.getQuantity() + 2;
-                    var price = order.getPrice() == null ? BigDecimal.ZERO
-                            : order.getPrice().setScale(1, RoundingMode.HALF_DOWN);
-                    order.setBrandName(String.format("%s %s", order.getBrandName(), order.getName()));
-                    order.setQuantity(quantity);
-                    order.setPrice(price);
-                }).toList();
+    public List<OrderDto> getAllOrdersV1() {
+        return getOrderDtoList();
     }
 
     // Caching for expensive || frequently accessed data v2
     @Override
     public List<OrderDto> getAllOrdersV2() {
-        String cacheKey = "orders";
-        ListOperations<String, Object> listOps = redisTemplate.opsForList();
-        List<Object> cachedOrders = listOps.range(cacheKey, 0, -1);
-        if (cachedOrders != null && !cachedOrders.isEmpty()) {
-
-            // Orders found in cache
-            return cachedOrders.stream()
-                    .map(cachedOrder -> (OrderDto) cachedOrder)
-                    .collect(Collectors.toList());
+        // Check from cache
+        List<OrderDto> orders = orderCacheService.getAllOrders();
+        if (orders.isEmpty()) {
+            // Cache is empty then get from DB
+            orders = getOrderDtoList();
+            // Cache result
+            orderCacheService.cacheOrders(orders);
         }
-
-        // Orders not found in cache, fetch from the repository
-        List<OrderDto> orders = orderRepository.findAll().stream()
-                .filter(order -> order.getBrandName().length() < 10)
-                .peek(order -> {
-                    var quantity = order.getQuantity() == null ? 1L : order.getQuantity() + 2;
-                    var price = order.getPrice() == null ? BigDecimal.ZERO
-                            : order.getPrice().setScale(1, RoundingMode.HALF_DOWN);
-                    order.setBrandName(String.format("%s %s", order.getBrandName(), order.getName()));
-                    order.setQuantity(quantity);
-                    order.setPrice(price);
-                })
-                .map(orderMapper::toOrderDto)
-                .collect(Collectors.toList());
-
-        // Cache for next time (only if there are orders to cache)
-        if (!orders.isEmpty()) {
-            listOps.rightPushAll(cacheKey, orders.toArray());
-            // Set a TTL on the cache to expire in 1 hour
-            redisTemplate.expire(cacheKey, Duration.ofHours(1));
-        }
-        System.out.println(orders.size());
         return orders;
     }
+
+
 
     // Delete from cache
     // "allEntries = true" burda bu orderin cahce'ləndiyi bütün dataları silir.
@@ -206,6 +177,21 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getOrderByBrandNameAndName(String brandName, String name) {
         return orderRepository.findAllByBrandNameAndName(brandName, name);
+    }
+
+    private List<OrderDto> getOrderDtoList() {
+        return orderRepository.findAll().stream()
+                .filter(order -> order.getBrandName().length() < 10)
+                .peek(order -> {
+                    var quantity = order.getQuantity() == null ? 1L : order.getQuantity() + 2;
+                    var price = order.getPrice() == null ? BigDecimal.ZERO
+                            : order.getPrice().setScale(1, RoundingMode.HALF_DOWN);
+                    order.setBrandName(String.format("%s %s", order.getBrandName(), order.getName()));
+                    order.setQuantity(quantity);
+                    order.setPrice(price);
+                })
+                .map(orderMapper::toOrderDto)
+                .collect(Collectors.toList());
     }
 
     private static List<OrderDto> getCachedSearchResult(List<Object> cachedOrders) {

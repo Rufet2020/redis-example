@@ -17,15 +17,22 @@ public class OrderController {
 
     private final OrderService service;
 
-    @PostMapping
-    private ResponseEntity<OrderDto> createOrder(
+    @PostMapping("/v1/create")
+    private ResponseEntity<OrderDto> createOrderV1(
             @RequestBody CreateOrderRequest request
     ) {
-        return ResponseEntity.ok(service.createOrder(request));
+        return ResponseEntity.ok(service.createOrderV1(request));
+    }
+
+    @PostMapping("/v2/create")
+    private ResponseEntity<OrderDto> createOrderV2(
+            @RequestBody CreateOrderRequest request
+    ) {
+        return ResponseEntity.ok(service.createOrderV2(request));
     }
 
     @GetMapping("/all/v1")
-    private ResponseEntity<List<Order>> getAllV1() {
+    private ResponseEntity<List<OrderDto>> getAllV1() {
         return ResponseEntity.ok(service.getAllOrdersV1());
     }
 
