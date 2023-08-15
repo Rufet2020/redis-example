@@ -14,12 +14,13 @@ public interface OrderService {
 
     OrderDto getOrderByIdV2(Long orderId);
 
-
     List<Order> getAllOrdersV1();
 
     List<OrderDto> getAllOrdersV2();
 
-    void deleteOrder(Long orderId);
+    void deleteOrderV1(Long orderId);
+
+    void deleteOrderV2(Long orderId);
 
     List<OrderDto> searchOrderV1(String searchText);
 

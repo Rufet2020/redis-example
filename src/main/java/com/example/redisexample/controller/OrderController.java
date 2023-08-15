@@ -73,9 +73,14 @@ public class OrderController {
         return ResponseEntity.ok(service.searchOrderV2(query));
     }
 
-    @DeleteMapping("/delete/{id}")
-    private void deleteOrder(@PathVariable Long id) {
-        service.deleteOrder(id);
+    @DeleteMapping("/v1/delete/{id}")
+    private void deleteOrderV1(@PathVariable Long id) {
+        service.deleteOrderV1(id);
+    }
+
+    @DeleteMapping("/v2/delete/{id}")
+    private void deleteOrderV2(@PathVariable Long id) {
+        service.deleteOrderV2(id);
     }
 
 }

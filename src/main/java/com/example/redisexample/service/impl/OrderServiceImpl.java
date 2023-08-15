@@ -140,8 +140,19 @@ public class OrderServiceImpl implements OrderService {
     // Məs: Butun orderler listi cahce'lənmişdisə, bu Order silindikdə o cache də təmizlənəcək
     @Override
     @CacheEvict(value = "orders", allEntries = true)
-    public void deleteOrder(Long orderId) {
+    public void deleteOrderV1(Long orderId) {
         orderRepository.deleteById(orderId);
+    }
+
+    @Override
+    public void deleteOrderV2(Long orderId) {
+        orderRepository.deleteById(orderId);
+
+        // Delete from getOrderById cache
+        redisTemplate.delete("order::" + orderId);
+
+        //Delete from getAllOrders cache
+        redisTemplate.delete("orders");
     }
 
 
