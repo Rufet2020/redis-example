@@ -1,4 +1,4 @@
-package com.example.redisexample.dao.model.order;
+package com.example.redisexample.model.order;
 
 public enum OrderStatus {
     CREATED,

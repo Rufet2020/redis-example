@@ -1,8 +1,8 @@
 package com.example.redisexample.service;
 
 import com.example.redisexample.dao.entity.Order;
-import com.example.redisexample.dao.model.order.OrderDto;
-import com.example.redisexample.dao.model.order.request.CreateOrderRequest;
+import com.example.redisexample.model.order.OrderDto;
+import com.example.redisexample.model.order.request.CreateOrderRequest;
 
 import java.util.List;
 
@@ -10,9 +10,22 @@ public interface OrderService {
 
     OrderDto createOrder(CreateOrderRequest request);
 
-    Order getOrderById(Long orderId);
+    OrderDto getOrderByIdV1(Long orderId);
 
-    List<Order> getAllOrders();
+    OrderDto getOrderByIdV2(Long orderId);
+
+    List<Order> getAllOrdersV1();
+
+    List<OrderDto> getAllOrdersV2();
+
+    void deleteOrderV1(Long orderId);
+
+    void deleteOrderV2(Long orderId);
+
+    List<OrderDto> searchOrderV1(String searchText);
+
+    List<OrderDto> searchOrderV2(String searchText);
+
 
     List<Order> getOrderByBrandName(String brandName);
 
