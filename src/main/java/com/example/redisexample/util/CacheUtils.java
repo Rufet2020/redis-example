@@ -22,7 +22,7 @@ public class CacheUtils {
         redisTemplate.expire(cacheKey, Duration.ofHours(1));
     }
 
-    public void cacheList(String cacheKey, List<OrderDto> list) {
+    public <T> void cacheList(String cacheKey, List<T> list) {
         ListOperations<String, Object> listOps = redisTemplate.opsForList();
         listOps.rightPushAll(cacheKey, list.toArray());
         redisTemplate.expire(cacheKey, Duration.ofHours(1));

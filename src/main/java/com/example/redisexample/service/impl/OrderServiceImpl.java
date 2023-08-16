@@ -41,7 +41,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     // Create methodu üçün CachePut və ya CacheEvict işlədilə bilər
-    // CachePut ilə ümumi cache update olunur bu entity ilə elaqeli
+    // CachePut ilə ümumi cache update olunur bu method ilə elaqeli
     // CacheEvict ile bu cache ile əlaqəli cachelər silinəcək
     @Override
     @CachePut(value = "orders", key = "#result.id", unless = "#result.brandName == null")
