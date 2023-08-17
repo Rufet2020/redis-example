@@ -46,6 +46,8 @@ dependencies {
 
 	// Redis
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
+	// Redis client Jedis
 	implementation ("redis.clients:jedis")
 
 	compileOnly 'org.projectlombok:lombok'
