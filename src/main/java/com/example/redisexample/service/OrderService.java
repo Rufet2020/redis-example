@@ -8,13 +8,15 @@ import java.util.List;
 
 public interface OrderService {
 
-    OrderDto createOrder(CreateOrderRequest request);
+    OrderDto createOrderV1(CreateOrderRequest request);
+
+    OrderDto createOrderV2(CreateOrderRequest request);
 
     OrderDto getOrderByIdV1(Long orderId);
 
     OrderDto getOrderByIdV2(Long orderId);
 
-    List<Order> getAllOrdersV1();
+    List<OrderDto> getAllOrdersV1();
 
     List<OrderDto> getAllOrdersV2();
 
