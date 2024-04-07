@@ -44,19 +44,19 @@ There are used PostgreSql, Redis, by default project running on localhost:8080
 
 # Order endpoints
 
-| Endpoint                  |   Method   | Description                                             |  
-|:--------------------------|:----------:|:--------------------------------------------------------|
-| /order/v1/create          |  **POST**  | Create order and cache with annotation                  |
-| /order/v2/create          |  **POST**  | Create order and cache on manual config                 |
-| /order/v1/:id             |  **GET**   | Get order by id and cache with annotation               |
-| /order/v2/:id             |  **GET**   | Get order by id and cache on manual config              |
-| /order/all/v1             |  **GET**   | Get all orders and cache with annotation                |
-| /order/all/v2             |  **GET**   | Get all orders and cache on manual config               |
-| /order/v1/search/:query   |  **GET**   | Search order by any query without any caching process   |
-| /order/v2/search/:query   |  **GET**   | Search order by any query with caching result           |
-| /order/brand/:brand       |  **GET**   | Get order by brand name and use brand name as cache key |
-| /order/brand/:brand/:name |  **GET**   | Get order by brand name & name and use both as key      |
-| /order/v1/delete/:id      | **DELETE** | Delete order by id and cache evict with annotation      |
-| /order/v2/delete/:id      | **DELETE** | Delete order by id and cache evict with manual config   |
+| Endpoint                                                  |   Method   | Description                                             |  
+|:----------------------------------------------------------|:----------:|:--------------------------------------------------------|
+| localhost:8080/redis-example/v1/order                     |  **POST**  | Create order and cache with annotation                  |
+| localhost:8080/redis-example/v2/order                     |  **POST**  | Create order and cache on manual config                 |
+| localhost:8080/redis-example/v1/order/:id                 |  **GET**   | Get order by id and cache with annotation               |
+| localhost:8080/redis-example/v2/order/:id                 |  **GET**   | Get order by id and cache on manual config              |
+| localhost:8080/redis-example/v1/order                     |  **GET**   | Get all orders and cache with annotation                |
+| localhost:8080/redis-example/v2/order                     |  **GET**   | Get all orders and cache on manual config               |
+| localhost:8080/redis-example/v2/order/search/:query       |  **GET**   | Search order by any query without any caching process   |
+| localhost:8080/redis-example/v2/order/search-cache/:query |  **GET**   | Search order by any query with caching result           |
+| localhost:8080/redis-example/v1/order/brand/:brand        |  **GET**   | Get order by brand name and use brand name as cache key |
+| localhost:8080/redis-example/v1/order/brand/:brand/:name  |  **GET**   | Get order by brand name & name and use both as key      |
+| localhost:8080/redis-example/v1/order/:id                 | **DELETE** | Delete order by id and cache evict with annotation      |
+| localhost:8080/redis-example/v2/order/:id                 | **DELETE** | Delete order by id and cache evict with manual config   |
 
 </details>
