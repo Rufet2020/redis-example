@@ -1,6 +1,10 @@
 package com.example.redisexample.service.impl;
 
+import static com.example.redisexample.util.Constants.ORDERS_KEY;
+import static com.example.redisexample.util.Constants.ORDER_KEY;
+import static com.example.redisexample.util.Constants.SEARCH_KEY;
 import static com.example.redisexample.util.helper.SearchHelper.orderContainsText;
+import static java.util.Collections.singletonList;
 
 import com.example.redisexample.dao.entity.Order;
 import com.example.redisexample.dao.repository.OrderRepository;
@@ -68,15 +72,15 @@ public class OrderServiceManualCacheImpl implements OrderServiceManualCache {
     public void deleteOrder(Long orderId) {
         orderRepository.deleteById(orderId);
         // Delete from getOrderById cache
-        redisTemplate.delete("order::" + orderId);
+        redisTemplate.delete(ORDER_KEY + orderId);
         //Delete from getAllOrders cache
-        redisTemplate.delete("orders");
+        redisTemplate.delete(ORDERS_KEY);
     }
 
     // Caching search result
     @Override
     public List<OrderDto> searchOrderWithCache(String searchText) {
-        String cacheKey = "search:" + searchText;
+        String cacheKey = SEARCH_KEY + searchText;
         ListOperations<String, Object> listOps = redisTemplate.opsForList();
 
         // Try to fetch results from cache

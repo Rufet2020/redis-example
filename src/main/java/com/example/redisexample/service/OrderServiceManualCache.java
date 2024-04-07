@@ -8,12 +8,9 @@ public interface OrderServiceManualCache {
 
     OrderDto createOrder(CreateOrderRequest request);
 
-
     OrderDto getOrderById(Long orderId);
 
-
     List<OrderDto> getAllOrders();
-
 
     void deleteOrder(Long orderId);
 

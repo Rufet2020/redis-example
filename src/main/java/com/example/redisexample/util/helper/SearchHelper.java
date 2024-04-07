@@ -1,6 +1,6 @@
 package com.example.redisexample.util.helper;
 
-import static com.example.redisexample.util.constants.EMPTY_STRING;
+import static com.example.redisexample.util.Constants.EMPTY_STRING;
 
 import com.example.redisexample.model.order.OrderDto;
 import org.springframework.stereotype.Component;
