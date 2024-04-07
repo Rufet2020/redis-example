@@ -1,7 +1,6 @@
 package com.example.redisexample.service.impl;
 
 import static com.example.redisexample.util.helper.SearchHelper.orderContainsText;
-import static java.util.Collections.singletonList;
 
 import com.example.redisexample.dao.entity.Order;
 import com.example.redisexample.dao.repository.OrderRepository;
@@ -34,7 +33,6 @@ public class OrderServiceManualCacheImpl implements OrderServiceManualCache {
     @Override
     public OrderDto createOrder(CreateOrderRequest request) {
         OrderDto orderDto = orderMapper.toOrderDto(orderRepository.save(orderMapper.toOrderEntity(request)));
-        log.info("created orderDto with id of: {}", orderDto.getId());
         orderCacheService.cacheOrders(singletonList(orderDto));
         return orderDto;
     }
