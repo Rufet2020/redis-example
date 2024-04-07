@@ -33,9 +33,7 @@ public class OrderServiceManualCacheImpl implements OrderServiceManualCache {
     @Override
     public OrderDto createOrder(CreateOrderRequest request) {
         OrderDto orderDto = orderMapper.toOrderDto(orderRepository.save(orderMapper.toOrderEntity(request)));
-        log.info("created orderDto with id of: {}", orderDto.getId());
-        orderCacheService.cacheOrder(orderDto);
-        orderCacheService.cacheOrders(List.of(orderDto));
+        orderCacheService.cacheOrders(singletonList(orderDto));
         return orderDto;
     }
 
@@ -45,7 +43,7 @@ public class OrderServiceManualCacheImpl implements OrderServiceManualCache {
         if (orderDto == null) {
             Optional<Order> orderOptional = orderRepository.findOrderById(orderId);
             orderDto = orderOptional.map(orderMapper::toOrderDto).orElseThrow(OrderNotFoundException::new);
-            orderCacheService.cacheOrder(orderDto);
+            orderCacheService.cacheOrders(singletonList(orderDto));
         }
         return orderDto;
     }
